@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: deployment-mariadb
+  name: deployment-mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deployment-mariadb
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: deployment-mariadb
+    spec:
+      containers:
+      - image: mariadb:10.1
+        name: mariadb
+        env:
+          # Secrets
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-prestashop
+                key: DATABASE_ROOT_PASSWORD
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: secret-prestashop
+                key: PRESTASHOP_DATABASE_NAME
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: secret-prestashop
+                key: PRESTASHOP_DATABASE_USER
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-prestashop
+                key: PRESTASHOP_DATABASE_PASSWORD
+        volumeMounts:
+          - name: mariadb-persistent-storage
+            mountPath: /var/lib/mysql
+        resources: {}
+      volumes:
+      - name: mariadb-persistent-storage
+        persistentVolumeClaim:
+          claimName: pvc-mariadb
+status: {}

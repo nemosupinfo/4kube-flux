@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  PRESTASHOP_COUNTRY: fr
+  PRESTASHOP_FIRST_NAME: Nemo
+  PRESTASHOP_LANGUAGE: fr
+  PRESTASHOP_LAST_NAME: Hauduc
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: configmap-prestashop

@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: deployment-prestashop
+  name: deployment-prestashop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deployment-prestashop
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: deployment-prestashop
+    spec:
+      containers:
+      - image: bitnami/prestashop:1.7
+        name: prestashop
+        env:
+          # ConfigMaps
+          - name: PRESTASHOP_COUNTRY
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-prestashop
+                key: PRESTASHOP_COUNTRY
+          - name: PRESTASHOP_LANGUAGE
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-prestashop
+                key: PRESTASHOP_LANGUAGE
+          - name: PRESTASHOP_FIRST_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-prestashop
+                key: PRESTASHOP_FIRST_NAME
+          - name: PRESTASHOP_LAST_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-prestashop
+                key: PRESTASHOP_LAST_NAME
+          # Secrets
+          - name: MARIADB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: secret-prestashop
+                key: MARIADB_HOST
+          - name: PRESTASHOP_DATABASE_NAME
+            valueFrom:
+              secretKeyRef:
+                name: secret-prestashop
+                key: PRESTASHOP_DATABASE_NAME
+          - name: PRESTASHOP_DATABASE_USER
+            valueFrom:
+              secretKeyRef:
+                name: secret-prestashop
+                key: PRESTASHOP_DATABASE_USER
+          - name: PRESTASHOP_DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-prestashop
+                key: PRESTASHOP_DATABASE_PASSWORD
+          - name: PRESTASHOP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-prestashop
+                key: PRESTASHOP_PASSWORD
+        volumeMounts:
+          - name: prestashop-persistent-storage
+            mountPath: /bitnami
+        resources: {}
+      volumes:
+      - name: prestashop-persistent-storage
+        persistentVolumeClaim:
+          claimName: pvc-prestashop
+status: {}
